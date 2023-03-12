@@ -3,8 +3,11 @@ name: Testsuite with DB
 on:
   workflow_call:
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
-  testsuite:
+  testsuite-linux:
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -18,7 +21,6 @@ jobs:
             dependencies: 'lowest'
           - php-version: '8.2'
             db-type: 'mysql'
-            composer-options: '--ignore-platform-req=php'
 
     services:
       postgres:
@@ -42,6 +44,7 @@ jobs:
       with:
         php-version: ${{ matrix.php-version }}
         extensions: mbstring, intl, pdo_${{ matrix.db-type }}
+        ini-values: zend.assertions=1
         coverage: pcov
 
     - name: Composer install
@@ -57,7 +60,7 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
         if [[ ${{ matrix.php-version }} == '8.1' && ${{ matrix.db-type }} == 'mysql' ]]; then
-          vendor/bin/phpunit --coverage-clover=coverage.xml --verbose
+          vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
         else
           vendor/bin/phpunit
         fi
@@ -65,33 +68,3 @@ jobs:
     - name: Code Coverage Report
       if: success() && matrix.php-version == '8.1' && matrix.db-type == 'mysql'
       uses: codecov/codecov-action@v3
-
-  cs-stan:
-    name: Coding Standard & Static Analysis
-    runs-on: ubuntu-22.04
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
-        extensions: mbstring, intl
-        coverage: none
-        tools: vimeo/psalm:4, phpstan:1, cs2pr
-
-    - name: Composer Install
-      run: composer require cakephp/cakephp-codesniffer:5.x-dev
-
-    - name: Run phpcs
-      run: vendor/bin/phpcs --report=checkstyle --standard=CakePHP src/ tests/ | cs2pr
-
-    - name: Run psalm
-      if: always()
-      run: psalm --output-format=github
-      continue-on-error: true
-
-    - name: Run phpstan
-      if: always()
-      run: phpstan analyse

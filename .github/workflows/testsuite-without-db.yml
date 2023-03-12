@@ -3,6 +3,9 @@ name: Testsuite without DB
 on:
   workflow_call:
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   testsuite-linux:
     runs-on: ubuntu-22.04
@@ -25,7 +28,8 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-version }}
-        extensions: mbstring, intl, pdo_${{ matrix.db-type }}
+        extensions: mbstring, intl, pdo_sqlite
+        ini-values: zend.assertions=1
         coverage: pcov
 
     - name: Composer install
@@ -37,7 +41,7 @@ jobs:
     - name: Run PHPUnit
       run: |
         if [[ ${{ matrix.php-version }} == '8.1' && ${{ matrix.dependencies }} == 'highest' ]]; then
-          export CODECOVERAGE=1 && vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+          vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
         else
           vendor/bin/phpunit
         fi
