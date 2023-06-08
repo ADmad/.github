@@ -41,7 +41,7 @@ jobs:
     - name: Run PHPUnit
       run: |
         if [[ ${{ matrix.php-version }} == '8.1' && ${{ matrix.dependencies }} == 'highest' ]]; then
-          vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
+          vendor/bin/phpunit --display-incomplete --display-skipped --display-warnings --display-deprecations --coverage-clover=coverage.xml
         else
           vendor/bin/phpunit
         fi
