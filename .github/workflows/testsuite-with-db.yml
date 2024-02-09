@@ -21,8 +21,10 @@ jobs:
             dependencies: 'lowest'
           - php-version: '8.2'
             db-type: 'mysql'
+            dependencies: 'highest'
           - php-version: '8.3'
             db-type: 'mysql'
+            dependencies: 'highest'
 
     services:
       postgres:
