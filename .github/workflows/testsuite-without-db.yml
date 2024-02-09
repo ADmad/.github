@@ -18,6 +18,7 @@ jobs:
           - php-version: '8.1'
             dependencies: 'lowest'
           - php-version: '8.3'
+            dependencies: 'highest'
 
     steps:
     - uses: actions/checkout@v3
