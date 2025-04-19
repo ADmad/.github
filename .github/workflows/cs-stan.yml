@@ -20,17 +20,13 @@ jobs:
         php-version: '8.1'
         extensions: mbstring, intl
         coverage: none
-        tools: vimeo/psalm:6, phpstan:2, cs2pr
+        tools: phpstan:2, cs2pr
 
     - name: Composer Install
       run: composer require cakephp/cakephp-codesniffer:^5.1
 
     - name: Run phpcs
       run: vendor/bin/phpcs -s --report=checkstyle --standard=CakePHP src/ tests/ | cs2pr
-
-    - name: Run psalm
-      if: always()
-      run: psalm --output-format=github
 
     - name: Run phpstan
       if: always()
