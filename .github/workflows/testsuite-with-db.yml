@@ -32,7 +32,7 @@ jobs:
           - php-version: '8.5'
             db-type: 'mysql'
             dependencies: 'highest'
-            unstable: true
+            unstable: false
 
     services:
       postgres:
@@ -71,8 +71,8 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'mysql' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
-        if [[ ${{ matrix.php-version }} == '8.2' && ${{ matrix.db-type }} == 'mysql' ]]; then
-          vendor/bin/phpunit vendor/bin/phpunit --display-all-issues --fail-on-all-issues --do-not-fail-on-skipped --do-not-fail-on-incomplete  --coverage-clover=coverage.xml
+        if [[ ${{ matrix.php-version }} == '8.2' && ${{ matrix.db-type }} == 'mysql' && ${{ matrix.dependencies }} == 'highest' ]]; then
+          vendor/bin/phpunit --display-all-issues --fail-on-all-issues --do-not-fail-on-skipped --do-not-fail-on-incomplete  --coverage-clover=coverage.xml
         else
           vendor/bin/phpunit --display-phpunit-deprecations --display-warnings --display-deprecations
         fi
