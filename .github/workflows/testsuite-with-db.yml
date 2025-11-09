@@ -16,21 +16,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1']
+        php-version: ['8.2']
         db-type: [mysql, pgsql]
         dependencies: ['highest']
         unstable: [false]
         include:
-          - php-version: '8.1'
+          - php-version: '8.2'
             db-type: 'sqlite'
             dependencies: 'lowest'
             unstable: false
-          - php-version: '8.3'
-            db-type: 'mysql'
-            dependencies: 'highest'
-            unstable: false
           - php-version: '8.4'
             db-type: 'sqlite'
+            dependencies: 'highest'
+            unstable: false
+          - php-version: '8.5'
+            db-type: 'mysql'
             dependencies: 'highest'
             unstable: true
 
@@ -71,14 +71,14 @@ jobs:
         if [[ ${{ matrix.db-type }} == 'mysql' ]]; then export DB_URL='mysql://root:root@127.0.0.1/cakephp'; fi
         if [[ ${{ matrix.db-type }} == 'pgsql' ]]; then export DB_URL='postgres://postgres:postgres@127.0.0.1/postgres'; fi
 
-        if [[ ${{ matrix.php-version }} == '8.1' && ${{ matrix.db-type }} == 'mysql' ]]; then
-          vendor/bin/phpunit --display-incomplete --display-skipped --display-warnings --display-deprecations --coverage-clover=coverage.xml
+        if [[ ${{ matrix.php-version }} == '8.2' && ${{ matrix.db-type }} == 'mysql' ]]; then
+          vendor/bin/phpunit vendor/bin/phpunit --display-all-issues --fail-on-all-issues --do-not-fail-on-skipped --do-not-fail-on-incomplete  --coverage-clover=coverage.xml
         else
-          vendor/bin/phpunit
+          vendor/bin/phpunit --display-phpunit-deprecations --display-warnings --display-deprecations
         fi
 
     - name: Code Coverage Report
-      if: success() && matrix.php-version == '8.1' && matrix.db-type == 'mysql'
+      if: success() && matrix.php-version == '8.2' && matrix.db-type == 'mysql'
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
