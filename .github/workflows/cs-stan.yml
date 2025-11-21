@@ -26,7 +26,7 @@ jobs:
       run: composer require cakephp/cakephp-codesniffer:^5.3
 
     - name: Run phpcs
-      run: vendor/bin/phpcs -s --report=checkstyle --standard=CakePHP src/ tests/ | cs2pr
+      run: vendor/bin/phpcs -s --report=checkstyle | cs2pr
 
     - name: Run phpstan
       if: always()
