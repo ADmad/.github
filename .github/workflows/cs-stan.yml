@@ -1,7 +1,7 @@
 name: Coding Standard & Static Analysis
 
 on:
-  workflow_call:
+  workflow_call: 
 
 permissions:
   contents: read # to fetch code (actions/checkout)
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses:  actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -20,7 +20,7 @@ jobs:
         php-version: '8.2'
         extensions: mbstring, intl
         coverage: none
-        tools: phpstan:2, cs2pr
+        tools: phpstan:2, psalm:6 cs2pr
 
     - name: Composer Install
       run: composer require cakephp/cakephp-codesniffer:^5.3
@@ -30,4 +30,18 @@ jobs:
 
     - name: Run phpstan
       if: always()
-      run: phpstan analyse
+      run: |
+        if [ -f "phpstan.neon" ] || [ -f "phpstan.dist.neon" ]; then
+          phpstan analyse
+        else
+          echo "No PHPStan configuration file found, skipping analysis"
+        fi
+
+    - name: Run psalm
+      if: always()
+      run: |
+        if [ -f "psalm.xml" ] || [ -f "psalm.dist.xml" ]; then
+          psalm --output-format=github
+        else
+          echo "No Psalm configuration file found, skipping analysis"
+        fi
