@@ -30,9 +30,14 @@ jobs:
             dependencies: 'highest'
             unstable: false
           - php-version: '8.5'
+            db-type: 'sqlite'
+            dependencies: 'highest'
+            unstable: false
+          - php-version: '8.6'
             db-type: 'mysql'
             dependencies: 'highest'
             unstable: false
+            composer-options: '--ignore-platform-req=php+'
 
     services:
       postgres:
