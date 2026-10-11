@@ -29,6 +29,7 @@ jobs:
             db-type: 'sqlite'
             dependencies: 'highest'
             unstable: false
+            composer-options: '--ignore-platform-req=php+'
 
     services:
       postgres:

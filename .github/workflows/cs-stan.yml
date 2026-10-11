@@ -23,7 +23,7 @@ jobs:
         tools: phpstan:2, psalm:6, cs2pr
 
     - name: Composer Install
-      run: composer require cakephp/cakephp-codesniffer:6.x-dev
+      run: composer require cakephp/cakephp-codesniffer:6.x-dev --ignore-platform-req=php+
 
     - name: Run phpcs
       run: vendor/bin/phpcs --report=checkstyle | cs2pr
